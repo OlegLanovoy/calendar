@@ -1,8 +1,8 @@
 "use client";
 
-import * as React from "react";
 import { format } from "date-fns";
 import { CalendarIcon, Clock } from "lucide-react";
+import { useEffect, useState, useMemo } from "react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -45,24 +45,21 @@ export function DateTimeRangePicker({
   className,
   onRangeChange,
 }: DateTimeRangePickerProps) {
-  const [startDate, setStartDate] = React.useState<Date>();
-  const [endDate, setEndDate] = React.useState<Date>();
-  const [showStartTime, setShowStartTime] = React.useState(false);
-  const [showEndTime, setShowEndTime] = React.useState(false);
-  const [startTime, setStartTime] = React.useState<string>();
-  const [endTime, setEndTime] = React.useState<string>();
+  const [startDate, setStartDate] = useState<Date>();
+  const [endDate, setEndDate] = useState<Date>();
+  const [showStartTime, setShowStartTime] = useState(false);
+  const [showEndTime, setShowEndTime] = useState(false);
+  const [startTime, setStartTime] = useState<string>();
+  const [endTime, setEndTime] = useState<string>();
 
-  const [startPopoverOpen, setStartPopoverOpen] = React.useState(false);
-  const [tempStartDate, setTempStartDate] = React.useState<Date | undefined>(
+  const [startPopoverOpen, setStartPopoverOpen] = useState(false);
+  const [tempStartDate, setTempStartDate] = useState<Date | undefined>(
     startDate
   );
-  const [endPopoverOpen, setEndPopoverOpen] = React.useState(false);
-  const [tempEndDate, setTempEndDate] = React.useState<Date | undefined>(
-    startDate
-  );
+  const [endPopoverOpen, setEndPopoverOpen] = useState(false);
+  const [tempEndDate, setTempEndDate] = useState<Date | undefined>(startDate);
 
-  // Generate time options in 30-minute intervals
-  const timeOptions = React.useMemo(() => {
+  const timeOptions = useMemo(() => {
     const options = [];
     for (let hour = 0; hour < 24; hour++) {
       for (const minute of [0, 30]) {
@@ -76,8 +73,7 @@ export function DateTimeRangePicker({
     return options;
   }, []);
 
-  // Update parent component when selection changes
-  React.useEffect(() => {
+  useEffect(() => {
     if (startDate && endDate && onRangeChange) {
       onRangeChange({
         startDate,
@@ -96,18 +92,11 @@ export function DateTimeRangePicker({
     onRangeChange,
   ]);
 
-  // Validate that end date is after start date
-  React.useEffect(() => {
+  useEffect(() => {
     if (startDate && endDate && startDate > endDate) {
       setEndDate(startDate);
     }
   }, [startDate, endDate]);
-
-  // React.useEffect(() => {
-  //   if (endDate && isToday(endDate)) {
-  //     setEndTime(undefined);
-  //   }
-  // }, [endDate]);
 
   const isToday = (date?: Date) => {
     if (!date) return false;
@@ -119,7 +108,7 @@ export function DateTimeRangePicker({
     );
   };
 
-  const filteredTimeOptions = React.useMemo(() => {
+  const filteredTimeOptions = useMemo(() => {
     if (!startDate || !isToday(startDate)) return timeOptions;
 
     const now = new Date();
@@ -132,10 +121,9 @@ export function DateTimeRangePicker({
     });
   }, [timeOptions, startDate]);
 
-  const filteredEndTimeOptions = React.useMemo(() => {
+  const filteredEndTimeOptions = useMemo(() => {
     if (!endDate) return timeOptions;
 
-    // Если endDate == today И startDate == today
     if (isToday(startDate) && isToday(endDate)) {
       const now = new Date();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
@@ -147,7 +135,6 @@ export function DateTimeRangePicker({
       });
     }
 
-    // Если другая дата — показываем всё
     return timeOptions;
   }, [timeOptions, endDate, startDate]);
 
@@ -167,7 +154,7 @@ export function DateTimeRangePicker({
                 id="start-date"
                 variant="outline"
                 className={cn(
-                  "w-full justify-start text-left font-normal",
+                  "w-full justify-start text-left font-normal ",
                   !startDate && "text-muted-foreground"
                 )}
               >
@@ -175,7 +162,10 @@ export function DateTimeRangePicker({
                 {startDate ? format(startDate, "PPP") : "Select date"}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 z-50" align="start">
+            <PopoverContent
+              className="w-[--radix-popover-trigger-width] p-0 z-50 w-full "
+              align="start"
+            >
               <div className="flex flex-col gap-2 p-3">
                 <Calendar
                   mode="single"
@@ -241,7 +231,7 @@ export function DateTimeRangePicker({
             </TooltipProvider>
           </div>
 
-          {/* Start Time Selector (conditional) */}
+          {/* Start Time Selector */}
           {showStartTime && (
             <div className="pt-2">
               <Select value={startTime} onValueChange={setStartTime}>
@@ -352,7 +342,7 @@ export function DateTimeRangePicker({
             </TooltipProvider>
           </div>
 
-          {/* End Time Selector (conditional) */}
+          {/* End Time Selector*/}
           {showEndTime && (
             <div className="pt-2">
               <Select value={endTime} onValueChange={setEndTime}>
