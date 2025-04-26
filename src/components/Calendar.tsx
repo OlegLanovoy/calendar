@@ -333,23 +333,20 @@ export function DateTimeRangePicker({
                 <TooltipTrigger asChild>
                   <div className="flex items-center space-x-2 pt-2 cursor-default">
                     <Switch
-                      id="start-time-toggle"
+                      id="end-time-toggle"
                       checked={showEndTime}
                       onCheckedChange={setShowEndTime}
                       disabled={!endDate}
                       className="disabled:cursor-default"
                     />
-                    <Label
-                      htmlFor="start-time-toggle"
-                      className="cursor-pointer"
-                    >
+                    <Label htmlFor="end-time-toggle" className="cursor-default">
                       Add end time
                     </Label>
                   </div>
                 </TooltipTrigger>
 
-                {!startDate && (
-                  <TooltipContent>First choose a start date</TooltipContent>
+                {!endDate && (
+                  <TooltipContent>First choose end date</TooltipContent>
                 )}
               </Tooltip>
             </TooltipProvider>
