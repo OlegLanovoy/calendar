@@ -217,7 +217,7 @@ export function DateTimeRangePicker({
                     />
                     <Label
                       htmlFor="start-time-toggle"
-                      className="cursor-pointer"
+                      className="cursor-default"
                     >
                       Add start time
                     </Label>
